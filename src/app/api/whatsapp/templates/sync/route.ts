@@ -123,6 +123,7 @@ function extractSampleValues(
 }
 
 export async function POST() {
+  console.log("=== SYNC ROUTE EXECUTED ===");
   try {
     const supabase = await createClient()
 

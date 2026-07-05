@@ -53,16 +53,35 @@
 - Ran an automated browser subagent to perform a full QA pass over all routes (\/dashboard\, \/members\, \/inbox\, \/campaigns\, \/reports\, \/templates\, \/media\).
 - All pages verified successfully with 0 crashes.
 
+
+## [2026-07-05 07:37:53] Recovery & QA Pass
+**Request:** revert back / check all the pages if they are working properly
+**Action Taken:**
+- Recovered and rewrote missing pages (\Members.tsx\, \Inbox.tsx\, \Templates.tsx\, \Login.tsx\) from memory and logs after an accidental truncation.
+- Fixed TypeScript imports and compilation errors across the frontend (in \ErrorBoundary.tsx\, \Layout.tsx\, \Campaigns.tsx\).
+- Ran an automated browser subagent to perform a full QA pass over all routes (\/dashboard\, \/members\, \/inbox\, \/campaigns\, \/reports\, \/templates\, \/media\).
+- All pages verified successfully with 0 crashes.
+
 ## [2026-07-05 08:57:41] Initialized Git and Pushed Code
 **Request:** push the code https://github.com/Soundararajan102/Brolier-360.git
 **Action Taken:**
-- Created a root \.gitignore\ file to prevent sensitive files (like \.env\, ode_modules\, \env\) from being committed.
+- Created a root \.gitignore\ file to prevent sensitive files (like \.env\, ode_modules\, \ env\) from being committed.
 - Initialized a git repository, committed the entire codebase, and pushed it to \origin main\ on GitHub.
 
 ## [2026-07-05 09:08:30] Pivoted to wacrm architecture
 **Request:** Replace custom code with wacrm repository.
 **Action Taken:**
-- Deleted old \rontend\ and \ackend\ folders.
-- Cloned \https://github.com/ArnasDon/wacrm.git\ directly into the root folder.
-- Preserved \.core\, \.agents\, and Git history.
-- Run pm install\ to prepare Next.js environment.
+- Deleted old `frontend` and `backend` folders.
+- Cloned `https://github.com/ArnasDon/wacrm.git` directly into the root folder.
+- Preserved `.core`, `.agents`, and Git history.
+- Run `npm install` to prepare Next.js environment.
+
+## [2026-07-05 10:07:00] Configured Supabase & Meta Webhooks Setup
+**Request:** Link Supabase, setup environment keys, fix encryption token bug, and configure Meta Webhooks.
+**Action Taken:**
+- Instructed user on linking Supabase using the CLI (`npx supabase login`, `npx supabase link`, `npx supabase db push`).
+- Injected `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` into `.env.local`.
+- Injected `SUPABASE_SERVICE_ROLE_KEY` securely into `.env.local`.
+- Generated a strictly valid 32-byte (64-character hex) `ENCRYPTION_KEY` using Node's `crypto` module to fix the AES-256 decryption error.
+- Restarted the Next.js Turbopack dev server to apply environment changes.
+- Guided user on Meta App webhook setup and differences between test and registered numbers.
