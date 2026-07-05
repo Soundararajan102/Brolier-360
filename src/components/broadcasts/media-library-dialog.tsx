@@ -28,7 +28,7 @@ interface StorageFile {
   id: string | null;
   updated_at: string | null;
   created_at: string | null;
-  metadata: any;
+  metadata: Record<string, unknown> | null;
 }
 
 const EXTENSIONS = {

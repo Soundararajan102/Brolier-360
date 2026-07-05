@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation';
 import { Loader2, AlertTriangle } from 'lucide-react';
 
 import {
@@ -23,7 +22,6 @@ export function DeleteAccountDialog() {
   const [open, setOpen] = useState(false);
   const [confirmation, setConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!loading) {
