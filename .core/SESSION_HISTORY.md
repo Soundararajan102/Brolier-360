@@ -52,3 +52,17 @@
 - Fixed TypeScript imports and compilation errors across the frontend (in \ErrorBoundary.tsx\, \Layout.tsx\, \Campaigns.tsx\).
 - Ran an automated browser subagent to perform a full QA pass over all routes (\/dashboard\, \/members\, \/inbox\, \/campaigns\, \/reports\, \/templates\, \/media\).
 - All pages verified successfully with 0 crashes.
+
+## [2026-07-05 08:57:41] Initialized Git and Pushed Code
+**Request:** push the code https://github.com/Soundararajan102/Brolier-360.git
+**Action Taken:**
+- Created a root \.gitignore\ file to prevent sensitive files (like \.env\, ode_modules\, \env\) from being committed.
+- Initialized a git repository, committed the entire codebase, and pushed it to \origin main\ on GitHub.
+
+## [2026-07-05 09:08:30] Pivoted to wacrm architecture
+**Request:** Replace custom code with wacrm repository.
+**Action Taken:**
+- Deleted old \rontend\ and \ackend\ folders.
+- Cloned \https://github.com/ArnasDon/wacrm.git\ directly into the root folder.
+- Preserved \.core\, \.agents\, and Git history.
+- Run pm install\ to prepare Next.js environment.

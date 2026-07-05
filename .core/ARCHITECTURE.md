@@ -45,3 +45,11 @@ Decoupled Architecture. The Backend is a pure API server (FastAPI) serving REST 
 - **Styling:** Tailwind CSS v3, Shadcn UI
 - **Integrations:** Meta WhatsApp Cloud API (Graph API)
 - **Concurrency:** FastAPI BackgroundTasks / AsyncIO for non-blocking bulk message broadcasting.
+
+### [2026-07-05 09:08:30] Pivot to wacrm (Next.js + Supabase)
+**Major Shift:** The custom Vite + FastAPI architecture was completely deprecated and removed. 
+The codebase is now based on the open-source wacrm repository.
+- **Frontend/Backend:** Next.js 16 Monorepo (App Router, Server Actions, React 19).
+- **Database/Auth:** Supabase (PostgreSQL, Supabase Auth, Storage).
+- **Styling:** Tailwind CSS v4.
+- **Deployment Strategy:** Vercel / Hostinger (Zero-config Node.js deployment).
