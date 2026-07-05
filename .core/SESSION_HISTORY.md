@@ -1,0 +1,54 @@
+# Session History
+
+### 2026-07-04 Session
+- **Environment Migration:** Successfully migrated the project context to `D:\Brolier 360`.
+- **Initialization of Governance:** Created/Updated `.agents` and `.core` documentation folders.
+- **Frontend Build Stability:** Resolved CSS build errors caused by Tailwind CSS v4.
+- **Phase 4 - WhatsApp API Inbox (Webhooks):** Implemented two-way messaging architecture.
+  - Added `ChatMessage` database model to store inbound and outbound messages.
+  - Updated `backend/app/api/webhooks.py` to parse incoming text messages from Meta webhook events and associate them with existing Members.
+  - Created `backend/app/api/inbox.py` for fetching conversation threads and chat history.
+  - Built `frontend/src/pages/Inbox.tsx` (a WhatsApp Web-style dual-pane chat interface).
+  - Wired the new Inbox route into the main frontend `App.tsx` and sidebar `Layout.tsx`.
+  - Updated sidebar branding to "Brolier 360 WA". project.
+- Drafted `ARCHITECTURE.md` and `DATA_MODELS.md` based on the decoupled FastAPI & React architecture.
+- **Project Check:** Reviewed `.core` architecture, data models, and rules to familiarize myself with the Brolier 360 project structure.
+- **Q&A:** Clarified that Antigravity 2.0 and Antigravity IDE can coexist and be used simultaneously.
+- **Data Integration:** Connected the React frontend (Dashboard, Reports, Media) to real data from the Meta API via new FastAPI backend endpoints (`/api/dashboard/stats`, `/api/campaigns/reports`, `/api/media`), removing the mock data arrays.
+- **Environment Setup:** Installed missing `psycopg2-binary` dependency and successfully started both the FastAPI backend and Vite frontend servers.
+- **Frontend Interactivity:** Made dummy buttons across the app functional where possible. Wired up 'Export CSV' in Reports, 'Upload New Media' in Media to the backend `/api/media/upload`, and added functional placeholders for 'Edit' and 'Filter Options' in Members. Ignored the Campaigns page as requested.
+- **Q&A:** Confirmed capability to collaborate on the project concurrently handled by Antigravity 2.0.
+- **Frontend Update:** Replaced mock data in `frontend/src/pages/Campaigns.tsx` to dynamically fetch and display real WhatsApp templates from the backend API. Wired up the "Send Now" button to dispatch campaigns correctly.
+- **Backend Fix:** Added error handling in `backend/app/api/campaigns.py` to supply a default placeholder image when Meta API rejects templates that expect an IMAGE header component.
+- **Backend Fix:** Added missing `httpx` import in `backend/app/api/campaigns.py` resolving IDE error.
+- **Frontend Fix:** Fixed TS config IDE error by removing deprecated `baseUrl` in `tsconfig.json` and `tsconfig.app.json` which resolved `npm run build` warnings.
+- **System Audit:** Performed a comprehensive project audit. Verified frontend build, backend imports, checked dependencies, and successfully tested core API endpoints (`/api/dashboard/stats`, `/api/campaigns/reports`, `/api/media`, `/api/inbox/conversations`) using a test client.
+- **Environment Run:** Spun up the FastAPI backend (`uvicorn app.main:app --reload`) and the Vite React frontend (`npm run dev`) for active development.
+- **Frontend Update:** Removed the "Attach Poster/Media" placeholder from `Campaigns.tsx` as media is handled directly in the Meta template setup.
+- **Dynamic Template Preview:** Updated the backend `Template` model and Meta sync API to extract and store `header_type` (IMAGE, VIDEO, DOCUMENT) and `buttons`. Updated `Campaigns.tsx` frontend preview to conditionally render an image/video placeholder and iterate over dynamic button texts to perfectly match the Meta Business Suite preview format.
+- **WhatsApp CRM Full Improvement:** 
+  - **Campaign Dispatch:** Updated `CampaignCreate` API to dynamically receive `media_id`, extract the Meta `media_id` string, and construct correct Meta component payload for templates expecting media. Added UI selector in `Campaigns.tsx` to conditionally attach user-uploaded Media.
+  - **Live Campaign Monitoring:** Added new `/api/campaigns/{id}/live-stats` backend endpoint. Designed and implemented a dynamic Live Campaign Status dialog in `Reports.tsx` with refresh capabilities and clear metrics (Sent, Delivered, Read, Failed, Pending).
+  - **Webhook Hardening:** Updated `webhooks.py` to ensure read receipts also defensively mark messages as delivered to handle out-of-order webhook events.
+  - **Audience Management:** Audited `/api/members/upload` CSV functionality and the `Members.tsx` Import CSV integration, validating that the CRM provides bulk member ingest capability.
+- **AAS Plugin Integration:** Installed `antigravity-awesome-skills` to `.agents/skills` via `npx` command and documented the command in `.core/AGENT_COMMANDS.md`.
+- **Agent Commands:** Updated `.core/AGENT_COMMANDS.md` to explicitly document the `/frontend-ui-engineering` and `/planning-and-task-breakdown` slash commands.
+- **Bug Fix:** Fixed an issue where the frontend was passing the string `media_id` from Meta instead of the backend's internal primary key `id` for media files. Modified `/api/media.py` to return `id` instead of `media_id`.
+- **UI Overhaul:** Conducted a comprehensive modern redesign of the frontend UI, adding Google Fonts (Outfit, Inter), vibrant HSL colors to `tailwind.config.js`, glassmorphic utility classes to `index.css`, a Dark Mode `ThemeProvider`, and a new top-bar navigation `Layout`.
+- **Page Redesigns:** Upgraded `Dashboard.tsx`, `Campaigns.tsx` (added a realistic iPhone chat interface mockup for preview), `Reports.tsx`, and `Members.tsx` with premium glass-card styling and subtle micro-animations.
+- **Documentation:** Updated `.core/AGENT_COMMANDS.md` to include a new "Frontend Development Commands" section listing UI, performance, browser testing, and code simplification commands.
+- **Bug Fix:** Fixed an ID mismatch in `/api/media` where the endpoint returned Meta's Media ID string instead of the database primary key, which caused subsequent campaign creation payloads to fail media lookups.
+- **UI Rework Planning:** Drafted an `implementation_plan.md` artifact to overhaul the frontend UI in accordance with modern web design guidelines, incorporating user instructions and skill directives.
+- **UI Performance Optimization:** Implemented route-level code splitting using `React.lazy` and `Suspense` in `App.tsx`. Added an `ErrorBoundary` to catch chunk loading failures. Implemented `onMouseEnter` Route Pre-fetching in `Layout.tsx` for instantaneous navigation. Added explicit `isLoading` skeleton states to `Dashboard.tsx` and `Campaigns.tsx` to eliminate layout shifts during data fetching. Verified success using `browser_subagent`.
+- **Database Architecture Optimization:** Rejected unsafe raw SQL scripts in favor of version-controlled migrations by integrating **Alembic**. Updated SQLAlchemy models to include B-Tree indexes on heavily queried columns (`wa_message_id`, `status`, `delivery_status`, etc.) and enforced `ondelete="CASCADE"` for relational data integrity. Autogenerated and executed the initial migration to safely optimize the live PostgreSQL database.
+- **Media Naming Functionality:** Restructured the frontend UI and backend API in `Media.tsx` and `media.py` to allow custom naming during image upload instead of defaulting to UUIDs. Modifed database schema `media` to include a `name` column.
+- **Action Buttons Hookup:** Added `PUT /api/members/{id}` and `DELETE /api/members/{id}` endpoints. Wired up the Edit (reusing the Add Member modal design with pre-filled inputs) and Delete buttons in the `Members.tsx` directory page.
+- **Mobile Responsive Redesign:** Overhauled the `Members.tsx` and `Layout.tsx` layouts specifically for mobile devices. Used Tailwind hidden classes to swap the horizontal data table for a stacked "Card List" on mobile. Implemented a Hamburger Menu in the `Layout.tsx` header that cleanly slides out the navigation sidebar, preventing viewport obscuration on 320px screens. Verified success using `browser_subagent`.
+
+## [2026-07-05 07:37:53] Recovery & QA Pass
+**Request:** revert back / check all the pages if they are working properly
+**Action Taken:**
+- Recovered and rewrote missing pages (\Members.tsx\, \Inbox.tsx\, \Templates.tsx\, \Login.tsx\) from memory and logs after an accidental truncation.
+- Fixed TypeScript imports and compilation errors across the frontend (in \ErrorBoundary.tsx\, \Layout.tsx\, \Campaigns.tsx\).
+- Ran an automated browser subagent to perform a full QA pass over all routes (\/dashboard\, \/members\, \/inbox\, \/campaigns\, \/reports\, \/templates\, \/media\).
+- All pages verified successfully with 0 crashes.
