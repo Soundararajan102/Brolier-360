@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, Eye, ImageIcon, Loader2, Upload } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, ImageIcon, Loader2, Upload, Library } from 'lucide-react';
 import { uploadAccountMedia, deleteAccountMedia, MEDIA_MAX_BYTES_BY_KIND } from '@/lib/storage/upload-media';
+import { MediaLibraryDialog } from './media-library-dialog';
 
 type VariableType = 'static' | 'field' | 'custom_field';
 
@@ -87,6 +88,7 @@ export function Step3Personalize({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadedMediaPath, setUploadedMediaPath] = useState<string | null>(null);
+  const [showLibrary, setShowLibrary] = useState(false);
 
   // Load user's custom fields + a representative contact for the
   // live preview. Fall back to sample data if no contacts exist yet.
@@ -319,6 +321,15 @@ export function Step3Personalize({
               )}
               Upload
             </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="shrink-0 border-border bg-muted text-muted-foreground"
+              onClick={() => setShowLibrary(true)}
+            >
+              <Library className="mr-2 h-4 w-4" />
+              Library
+            </Button>
             <input
               id="media-upload"
               type="file"
@@ -527,6 +538,20 @@ export function Step3Personalize({
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
+
+      {mediaHeaderType && (
+        <MediaLibraryDialog
+          open={showLibrary}
+          onOpenChange={setShowLibrary}
+          mediaType={mediaHeaderType}
+          activeUrl={headerMediaUrl}
+          onSelect={(url) => {
+            onHeaderMediaUrlChange(url);
+            setShowLibrary(false);
+            setUploadError(null);
+          }}
+        />
+      )}
     </div>
   );
 }

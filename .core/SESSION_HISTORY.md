@@ -69,6 +69,12 @@
 - **Task 1 (MIME Types):** Replaced wildcard `accept` attributes with strict MIME type strings matching Supabase bucket rules to provide a frontend firewall.
 - **Task 2 (Media Cleanup):** Imported `deleteAccountMedia` and stored `uploadedMediaPath` in state to delete orphaned media when a user swaps an image before sending.
 - User noted the "Abandoned Draft" caveat (closing the browser tab before sending leaves one orphaned file), agreeing that a future Supabase Edge Function cron job would be the ideal long-term fix as the CRM scales.
+### [2026-07-05 15:31:30] Pushed Health Check Fixes to GitHub
+**Request:** push the code will the deplody code will updated automatically ?
+**Actions Taken:**
+- Ran `git add .`, `git commit -m "fix: Codebase health fixes and Next.js 16 proxy migration"`, and `git push origin main`.
+- Pushed changes to `https://github.com/Soundararajan102/Brolier-360.git`.
+
 ### [2026-07-05 14:56:00] Codebase Health Check & Lint Fixes
 **Request:** full check of all possible error in the our local code
 **Actions Taken:**
@@ -141,3 +147,13 @@
 - Added file type `accept` filters based on `mediaHeaderType`.
 - Implemented proactive client-side size validation against Meta's `MEDIA_MAX_BYTES_BY_KIND` limits before attempting uploads.
 - Added loading state (disabled button with spinner) and inline error text for graceful error handling.
+
+### [2026-07-05 16:05:00] Built Broadcast Media Library
+**Request:** in the media i can create an function to view the previous media send in the other broadcast so if i need to resend it i can select it ?
+**Actions Taken:**
+- Authored and got user approval on an `implementation_plan.md` for a paginated media library fetching from the `chat-media` Supabase bucket.
+- Created `MediaLibraryDialog` component with `limit`/`offset` pagination and extension-based filtering to ensure compatibility with Meta's strict media types.
+- Placed a strict path scope to `account-<accountId>` guaranteeing multi-tenant data isolation.
+- Integrated the new Dialog into the `step3-personalize.tsx` flow, allowing users to select previously uploaded images/videos/documents with a single click.
+- **Media Deletion Enhancement:** Added a `deleteAccountMedia` integration directly inside the library grid. Implemented an active URL deselection failsafe that clears the parent form's URL if the currently selected media is deleted, preventing dead links from being dispatched to Meta.
+- Fixed a UI text overflow bug in `step1-choose-template.tsx` where long template names would collide with the category badge. Added `truncate`, `shrink-0`, and hover tooltips for proper responsive layout.
