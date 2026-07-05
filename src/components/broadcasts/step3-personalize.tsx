@@ -12,7 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, Eye, ImageIcon, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, ImageIcon, Loader2, Upload } from 'lucide-react';
+import { uploadAccountMedia, deleteAccountMedia, MEDIA_MAX_BYTES_BY_KIND } from '@/lib/storage/upload-media';
 
 type VariableType = 'static' | 'field' | 'custom_field';
 
@@ -83,6 +84,9 @@ export function Step3Personalize({
     Map<string, string>
   >(new Map());
   const [loadingPreview, setLoadingPreview] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadedMediaPath, setUploadedMediaPath] = useState<string | null>(null);
 
   // Load user's custom fields + a representative contact for the
   // live preview. Fall back to sample data if no contacts exist yet.
@@ -151,6 +155,36 @@ export function Step3Personalize({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mediaHeaderType, template.header_media_url]);
+
+  async function handleMediaUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !mediaHeaderType) return;
+
+    setUploadError(null);
+    const maxSize = MEDIA_MAX_BYTES_BY_KIND[mediaHeaderType];
+    if (file.size > maxSize) {
+      setUploadError(`File is too large. Maximum size is ${maxSize / (1024 * 1024)}MB.`);
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const { publicUrl, path } = await uploadAccountMedia('chat-media', file);
+      
+      if (uploadedMediaPath) {
+        // Fire-and-forget cleanup of the previously uploaded file
+        deleteAccountMedia('chat-media', uploadedMediaPath).catch(console.error);
+      }
+      setUploadedMediaPath(path);
+      onHeaderMediaUrlChange(publicUrl);
+    } catch (err: unknown) {
+      setUploadError(err instanceof Error ? err.message : 'Failed to upload media.');
+    } finally {
+      setIsUploading(false);
+      // Reset input so the same file can be selected again if needed
+      e.target.value = '';
+    }
+  }
 
   const headerMediaError = useMemo<'missing' | 'invalid' | null>(() => {
     if (!mediaHeaderType) return null;
@@ -254,25 +288,58 @@ export function Step3Personalize({
           <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
             Media URL
           </label>
-          <Input
-            type="url"
-            value={headerMediaUrl}
-            onChange={(e) => onHeaderMediaUrlChange(e.target.value)}
-            placeholder={`https://example.com/header.${
-              mediaHeaderType === 'image'
-                ? 'jpg'
-                : mediaHeaderType === 'video'
-                  ? 'mp4'
-                  : 'pdf'
-            }`}
-            className="border-border bg-muted text-foreground placeholder:text-muted-foreground"
-          />
+          <div className="flex gap-2">
+            <Input
+              type="url"
+              value={headerMediaUrl}
+              onChange={(e) => {
+                onHeaderMediaUrlChange(e.target.value);
+                setUploadError(null);
+              }}
+              placeholder={`https://example.com/header.${
+                mediaHeaderType === 'image'
+                  ? 'jpg'
+                  : mediaHeaderType === 'video'
+                    ? 'mp4'
+                    : 'pdf'
+              }`}
+              className="border-border bg-muted text-foreground placeholder:text-muted-foreground"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isUploading}
+              className="shrink-0 border-border bg-muted text-muted-foreground"
+              onClick={() => document.getElementById('media-upload')?.click()}
+            >
+              {isUploading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Upload className="mr-2 h-4 w-4" />
+              )}
+              Upload
+            </Button>
+            <input
+              id="media-upload"
+              type="file"
+              className="hidden"
+              accept={
+                mediaHeaderType === 'image'
+                  ? 'image/png, image/jpeg, image/webp'
+                  : mediaHeaderType === 'video'
+                    ? 'video/mp4, video/3gpp'
+                    : 'application/pdf, application/vnd.ms-powerpoint, application/msword, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, text/plain'
+              }
+              onChange={handleMediaUpload}
+            />
+          </div>
           <p className="mt-1.5 text-xs text-muted-foreground">
             Public URL of the {mediaHeaderType} sent as the message header.
             Used for every recipient in this broadcast.
           </p>
           {mediaHeaderType === 'image' &&
             headerMediaError === null &&
+            !uploadError &&
             headerMediaUrl.trim() && (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -281,11 +348,16 @@ export function Step3Personalize({
                 className="mt-3 max-h-40 rounded-lg border border-border object-contain"
               />
             )}
-          {headerMediaError && (
+          {headerMediaError && !uploadError && (
             <p className="mt-1.5 text-xs text-amber-300">
               {headerMediaError === 'missing'
                 ? 'A media URL is required to send this template.'
                 : 'Enter a valid http(s) URL.'}
+            </p>
+          )}
+          {uploadError && (
+            <p className="mt-1.5 text-xs text-red-500">
+              {uploadError}
             </p>
           )}
         </div>

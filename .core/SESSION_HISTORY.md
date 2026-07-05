@@ -61,6 +61,22 @@
 - Fixed TypeScript imports and compilation errors across the frontend (in \ErrorBoundary.tsx\, \Layout.tsx\, \Campaigns.tsx\).
 - Ran an automated browser subagent to perform a full QA pass over all routes (\/dashboard\, \/members\, \/inbox\, \/campaigns\, \/reports\, \/templates\, \/media\).
 - All pages verified successfully with 0 crashes.
+### [2026-07-05 14:48:00] Hardened Broadcast Media Upload UX
+**Request:** check all the chages we made from the original code and check will it cause any proble and working properly
+**Actions Taken:**
+- Conducted `/planning-and-task-breakdown` analysis comparing original `wacrm` base with current `Duro CRM` codebase.
+- Identified potential issues with `chat-media` bucket integration in `src/components/broadcasts/step3-personalize.tsx`.
+- **Task 1 (MIME Types):** Replaced wildcard `accept` attributes with strict MIME type strings matching Supabase bucket rules to provide a frontend firewall.
+- **Task 2 (Media Cleanup):** Imported `deleteAccountMedia` and stored `uploadedMediaPath` in state to delete orphaned media when a user swaps an image before sending.
+- User noted the "Abandoned Draft" caveat (closing the browser tab before sending leaves one orphaned file), agreeing that a future Supabase Edge Function cron job would be the ideal long-term fix as the CRM scales.
+### [2026-07-05 14:56:00] Codebase Health Check & Lint Fixes
+**Request:** full check of all possible error in the our local code
+**Actions Taken:**
+- Ran full `npm run build` and `npm run lint` across the workspace.
+- **Task 1:** Fixed `@typescript-eslint/no-explicit-any` strict typing error in `step3-personalize.tsx` by using `err: unknown` and `err instanceof Error`.
+- **Task 2:** Removed unused `options` variable in `middleware.ts`.
+- **Task 3 & 4:** Migrated `middleware.ts` to `proxy.ts` (and its test file) to resolve Next.js 16.2.6 deprecation warning (`The "middleware" file convention is deprecated`).
+- Re-ran tests, confirming all 593 tests are passing successfully.
 
 ## [2026-07-05 08:57:41] Initialized Git and Pushed Code
 **Request:** push the code https://github.com/Soundararajan102/Brolier-360.git
@@ -97,11 +113,31 @@
  * * A c t i o n   T a k e n : * * 
  -   E x e c u t e d   g l o b a l   N o d e . j s   s e a r c h - a n d - r e p l a c e   s c r i p t   a c r o s s   4 4   f i l e s . 
  -   U p d a t e d   a l l   U I   t e x t   a n d   d o c u m e n t a t i o n   t o   ' D u r o   C R M ' . 
- -   R e n a m e d   A P I   k e y   p r e f i x e s   ( \ w a c r m _ l i v e _ \   t o   \ d u r o c r m _ l i v e _ \ ) ,   W e b h o o k   h e a d e r s   ( \ X - W a c r m - E v e n t \   t o   \ X - D u r o C R M - E v e n t \ ) ,   a n d   b r o w s e r   L o c a l S t o r a g e   k e y s . 
- -   R e p l a c e d   p a c k a g e . j s o n   n a m e s   a n d   G i t h u b   r e p o s i t o r y   U R L s . 
- -   R a n   t e s t   s u i t e   t o   v e r i f y   c r y p t o g r a p h i c   s i g n a t u r e s   a n d   A P I   k e y   t e s t s   p a s s   s u c c e s s f u l l y .  
- # #   [ 2 0 2 6 - 0 7 - 0 5   1 0 : 5 6 : 0 0 ]   U p d a t e d   N e x t . j s   M e t a d a t a   T i t l e 
- * * R e q u e s t : * *   C h a n g e   b r o w s e r   t a b   n a m e   f r o m   B r o l i e r   3 6 0   t o   D u r o   C R M . 
- * * A c t i o n   T a k e n : * * 
- -   M o d i f i e d   \ s r c / a p p / l a y o u t . t s x \   t o   u s e   \ D u r o   C R M \   i n   t h e   m e t a d a t a   t i t l e   d e f a u l t   a n d   t e m p l a t e .  
- 
+# #   [ 2 0 2 6 - 0 7 - 0 5   1 0 : 4 5 : 0 0 ]   F i x e d   N e x t . j s   M i d d l e w a r e   a n d   P u s h e d   C o d e 
+ * * R e q u e s t : * *   F i x   t h e   s y n c   t e m p l a t e s   4 0 4   e r r o r   a n d   p u s h   c o d e   t o   G i t H u b . 
+ * * A c t i o n   T a k e n : * * 
+ -   D i a g n o s e d   t h e   \ U n e x p e c t e d   t o k e n   ' < ' \   e r r o r   a s   a   4 0 4   r e t u r n e d   b y   N e x t . j s   1 4 +   \ m i d d l e w a r e . t s \ . 
+ -   U p d a t e d   \ N e x t R e s p o n s e . n e x t ( {   r e q u e s t   } ) \   t o   \ N e x t R e s p o n s e . n e x t ( {   r e q u e s t :   {   h e a d e r s :   r e q u e s t . h e a d e r s   }   } ) \   i n   \ s r c / m i d d l e w a r e . t s \   t o   p r e v e n t   r e q u e s t   o b j e c t   m u t a t i o n . 
+ -   V e r i f i e d   \ w a c r m \   c o n t a c t   i m p o r t   f e a t u r e s   a n d   g u i d e d   t h e   u s e r   o n   h o w   t o   u p l o a d   c l i e n t   d a t a . 
+ -   C o m m i t t e d   a l l   c u r r e n t   c h a n g e s   ( m i d d l e w a r e   f i x e s ,   D B   s c h e m a   U U I D   u p d a t e s ,   b r a n d i n g ,   s e s s i o n   h i s t o r y )   a n d   s u c c e s s f u l l y   p u s h e d   t o   \ o r i g i n   m a i n \   o n   G i t H u b .  
+ # #   [ 2 0 2 6 - 0 7 - 0 5   1 0 : 5 5 : 0 0 ]   G l o b a l   R e b r a n d   t o   D u r o   C R M 
+ * * R e q u e s t : * *   R e m o v e   ' w a c r m '   a n d   r e p l a c e   w i t h   ' D u r o   C R M '   e v e r y w h e r e . 
+ * * A c t i o n   T a k e n : * * 
+ -   E x e c u t e d   g l o b a l   N o d e . j s   s e a r c h - a n d - r e p l a c e   s c r i p t   a c r o s s   4 4   f i l e s . 
+ -   U p d a t e d   a l l   U I   t e x t   a n d   d o c u m e n t a t i o n   t o   ' D u r o   C R M ' . 
+ -   R e n a m e d   A P I   k e y   p r e f i x e s   ( \ w a c r m _ l i v e _ \   t o   \ d u r o c r m _ l i v e _ \ ) ,   W e b h o o k   h e a d e r s   ( \ X - W a c r m - E v e n t \   t o   \ X - D u r o C R M - E v e n t \ ) ,   a n d   b r o w s e r   L o c a l S t o r a g e   k e y s . 
+ -   R e p l a c e d   p a c k a g e . j s o n   n a m e s   a n d   G i t h u b   r e p o s i t o r y   U R L s . 
+ -   R a n   t e s t   s u i t e   t o   v e r i f y   c r y p t o g r a p h i c   s i g n a t u r e s   a n d   A P I   k e y   t e s t s   p a s s   s u c c e s s f u l l y .  
+ # #   [ 2 0 2 6 - 0 7 - 0 5   1 0 : 5 6 : 0 0 ]   U p d a t e d   N e x t . j s   M e t a d a t a   T i t l e 
+ * * R e q u e s t : * *   C h a n g e   b r o w s e r   t a b   n a m e   f r o m   B r o l i e r   3 6 0   t o   D u r o   C R M . 
+ * * A c t i o n   T a k e n : * * 
+ -   M o d i f i e d   \ s r c / a p p / l a y o u t . t s x \   t o   u s e   \ D u r o   C R M \   i n   t h e   m e t a d a t a   t i t l e   d e f a u l t   a n d   t e m p l a t e .  
+
+## [2026-07-05 14:10:00] Broadcast Media Upload UI
+**Request:** Add an image upload button to the Broadcast personalization screen.
+**Action Taken:**
+- Planned and implemented an upload button in `src/components/broadcasts/step3-personalize.tsx` next to the Media URL input.
+- Leveraged the existing `uploadAccountMedia` utility to seamlessly upload files directly to the `chat-media` Supabase bucket.
+- Added file type `accept` filters based on `mediaHeaderType`.
+- Implemented proactive client-side size validation against Meta's `MEDIA_MAX_BYTES_BY_KIND` limits before attempting uploads.
+- Added loading state (disabled button with spinner) and inline error text for graceful error handling.
