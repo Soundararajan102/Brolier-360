@@ -68,11 +68,11 @@
 - Created a root \.gitignore\ file to prevent sensitive files (like \.env\, ode_modules\, \ env\) from being committed.
 - Initialized a git repository, committed the entire codebase, and pushed it to \origin main\ on GitHub.
 
-## [2026-07-05 09:08:30] Pivoted to wacrm architecture
-**Request:** Replace custom code with wacrm repository.
+## [2026-07-05 09:08:30] Pivoted to Duro CRM architecture
+**Request:** Replace custom code with Duro CRM repository.
 **Action Taken:**
 - Deleted old `frontend` and `backend` folders.
-- Cloned `https://github.com/ArnasDon/wacrm.git` directly into the root folder.
+- Cloned `https://github.com/Soundararajan102/Brolier-360.git` directly into the root folder.
 - Preserved `.core`, `.agents`, and Git history.
 - Run `npm install` to prepare Next.js environment.
 
@@ -92,4 +92,12 @@
  -   U p d a t e d   \ N e x t R e s p o n s e . n e x t ( {   r e q u e s t   } ) \   t o   \ N e x t R e s p o n s e . n e x t ( {   r e q u e s t :   {   h e a d e r s :   r e q u e s t . h e a d e r s   }   } ) \   i n   \ s r c / m i d d l e w a r e . t s \   t o   p r e v e n t   r e q u e s t   o b j e c t   m u t a t i o n . 
  -   V e r i f i e d   \ w a c r m \   c o n t a c t   i m p o r t   f e a t u r e s   a n d   g u i d e d   t h e   u s e r   o n   h o w   t o   u p l o a d   c l i e n t   d a t a . 
  -   C o m m i t t e d   a l l   c u r r e n t   c h a n g e s   ( m i d d l e w a r e   f i x e s ,   D B   s c h e m a   U U I D   u p d a t e s ,   b r a n d i n g ,   s e s s i o n   h i s t o r y )   a n d   s u c c e s s f u l l y   p u s h e d   t o   \ o r i g i n   m a i n \   o n   G i t H u b .  
+ # #   [ 2 0 2 6 - 0 7 - 0 5   1 0 : 5 5 : 0 0 ]   G l o b a l   R e b r a n d   t o   D u r o   C R M 
+ * * R e q u e s t : * *   R e m o v e   ' w a c r m '   a n d   r e p l a c e   w i t h   ' D u r o   C R M '   e v e r y w h e r e . 
+ * * A c t i o n   T a k e n : * * 
+ -   E x e c u t e d   g l o b a l   N o d e . j s   s e a r c h - a n d - r e p l a c e   s c r i p t   a c r o s s   4 4   f i l e s . 
+ -   U p d a t e d   a l l   U I   t e x t   a n d   d o c u m e n t a t i o n   t o   ' D u r o   C R M ' . 
+ -   R e n a m e d   A P I   k e y   p r e f i x e s   ( \ w a c r m _ l i v e _ \   t o   \ d u r o c r m _ l i v e _ \ ) ,   W e b h o o k   h e a d e r s   ( \ X - W a c r m - E v e n t \   t o   \ X - D u r o C R M - E v e n t \ ) ,   a n d   b r o w s e r   L o c a l S t o r a g e   k e y s . 
+ -   R e p l a c e d   p a c k a g e . j s o n   n a m e s   a n d   G i t h u b   r e p o s i t o r y   U R L s . 
+ -   R a n   t e s t   s u i t e   t o   v e r i f y   c r y p t o g r a p h i c   s i g n a t u r e s   a n d   A P I   k e y   t e s t s   p a s s   s u c c e s s f u l l y .  
  
